@@ -6,6 +6,9 @@ public class Enemy : MonoBehaviour
     private Rigidbody rb;
     private GameObject player;
 
+    public bool isStunned = false;
+    
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -13,10 +16,26 @@ public class Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        /*Vector3 dir = player.transform.position - transform.position;
+        dir.Normalize();
+        rb.AddForce(dir * speed);*/
+
+        if (StunPowerUp.isStunned)
+        { 
+            rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
         Vector3 dir = player.transform.position - transform.position;
         dir.Normalize();
-        rb.AddForce(dir * speed);
+        rb.linearVelocity = dir * speed;
+
+
     }
+
+
+
+
 }

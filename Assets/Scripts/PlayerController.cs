@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
 
     public bool hasPowerUp = false;
 
+    public GameObject powerUpEffect;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -25,6 +27,13 @@ public class PlayerController : MonoBehaviour
         smashAction = InputSystem.actions.FindAction("Smash");
         breakAction = InputSystem.actions.FindAction("Break");
     }
+
+    private void Start()
+    {
+        powerUpEffect.SetActive(false);
+    }
+
+
 
     // Update is called once per frame
     void Update()
@@ -41,6 +50,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
@@ -51,8 +61,8 @@ public class PlayerController : MonoBehaviour
 
                 var rb = collision.gameObject.GetComponent<Rigidbody>();
                 var dir = collision.transform.position - transform.position;
-                rb.AddForce(5 * dir.normalized, ForceMode.Impulse);
-
+                //rb.AddForce(5 * dir.normalized, ForceMode.Impulse);
+                rb.linearVelocity = Vector3.zero;
 
             }
         }
@@ -60,16 +70,31 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        /* if (other.CompareTag("PowerUp"))
+         {
+             hasPowerUp = true;
+             Destroy(other.gameObject);
+             powerUpEffect.SetActive(true);
+
+             if (countDown != null)
+             {
+                 StopCoroutine(countDown);
+             }
+            countDown = StartCoroutine(PowerUpCountDownRoutine());
+         }*/
+
+
+
         if (other.CompareTag("PowerUp"))
         {
             hasPowerUp = true;
             Destroy(other.gameObject);
-
+            powerUpEffect.SetActive(true);
             if (countDown != null)
             {
                 StopCoroutine(countDown);
             }
-           countDown = StartCoroutine(PowerUpCountDownRoutine());
+            countDown = StartCoroutine(PowerUpCountDownRoutine());
         }
     }
 
@@ -79,6 +104,8 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(10);
         hasPowerUp = false;
+
+        powerUpEffect.SetActive(false);
     }
 
 
